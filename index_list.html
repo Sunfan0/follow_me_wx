@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+    <title class="title">慧生活</title>
+    <!--<link rel="stylesheet" type="text/css" href="static/css/index_list.css"/>-->
+    <!--<link rel="stylesheet" type="text/css" href="static/css/common.css"/>-->
+    <link rel="stylesheet" type="text/css" href="static/css/weui.min.css"/>
+    <link rel="stylesheet" type="text/css" href="static/css/swiper-3.4.2.min.css"/>
+</head>
+<body>
+<div class="content" style="display: none">
+    <div class="body_item"></div>
+    <div class="bottomBox_common"><span>大学生，我有我的底线</span></div>
+</div>
+</body>
+<script type="text/javascript" src="static/js/jquery-3.1.1.min.js"></script>
+<!--<script type="text/javascript" src="static/js/common.js"></script>-->
+<script type="text/javascript" src="static/js/weui.min.js"></script>
+<script type="text/javascript" src="static/js/core/underscore.js"></script>
+<script type="text/javascript" src="static/js/core/util.js"></script>
+<script type="text/javascript" src="static/js/core/core_0305.js"></script>
+<script type="text/javascript" src="static/js/swiper-3.4.2.jquery.min.js"></script>
+<script>
+    var typeId = ocean.getRequestParameter("id");
+    window.onload = onLoad();
+
+    function onLoad() {
+        fatchTask();
+        dynamicLoading.css("static/css/index_list.css");
+        dynamicLoading.css("static/css/common.css");
+        dynamicLoading.js("static/js/common.js");
+        setTimeout(function () {
+            $(".content").show();
+        }, 50)
+    }
+
+
+    function fatchTask() {
+        ocean.get("api/type_task", {
+            typeId: typeId
+        }, function (res) {
+            if (res.code == 0) {
+                console.log(res);
+                $(".title").text(res.data[0].taskType);
+                var list = res.data[0].tasks;
+                var template = _.template($('#item_list').html());
+                $('.body_item').append(template({
+                    list: list,
+                    biz: localStorage.getItem("ocean-follow-biz-code") || "A1035554"
+                }));
+            }
+        });
+    }
+
+</script>
+<script type="text/template" id="item_list">
+    <@_.each(list, function (item) {@>
+    <div class="item_box" onclick="window.location.href='<@=item.link@>'">
+        <div class="img_bg" style="background-image: url('<@=item.picture@>')"></div>
+        <div class="color_bg"></div>
+        <p><@=item.name@></p>
+    </div>
+    <@ }); @>
+</script>
+</html>

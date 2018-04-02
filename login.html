@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+    <title class="title">登录</title>
+    <!--<link rel="stylesheet" type="text/css" href="static/css/login.css"/>-->
+    <link rel="stylesheet" type="text/css" href="static/css/common.css"/>
+    <link rel="stylesheet" type="text/css" href="static/css/weui.min.css"/>
+</head>
+<body onbeforeunload="saveRecord();">
+<div class="common_top">
+    <span class="back_btn" onclick="history.back()"><div></div></span>
+    <p class="title">登录</p>
+</div>
+<div class="common_content">
+    <div class="phoneInfo">
+        <span class="num86">+86</span>
+        <input id="phone_num" class="common_input" maxlength="11" onkeyup="value=value.replace(/[^\d]/g,'')"
+               placeholder="请输入手机号"/>
+        <img class="common_clearBtn" src="static/img/common/clear_btn.png">
+    </div>
+    <div class="codeInfo">
+        <input id="code_num" class="common_input" onkeyup="value=value.replace(/[^\d]/g,'')" placeholder="请输入验证码"/>
+        <img class="common_clearBtn" src="static/img/common/clear_btn.png">
+        <span class="get_code" onclick="getCodeEvent(this,'phone_num')">&nbsp;</span>
+    </div>
+    <p class="go_login">登录</p>
+    <p class="go_register">注册</p>
+</div>
+</body>
+<script type="text/javascript" src="static/js/jquery-3.1.1.min.js"></script>
+<script type="text/javascript" src="static/js/common.js"></script>
+<script type="text/javascript" src="static/js/weui.min.js"></script>
+<script type="text/javascript" src="static/js/core/core_0305.js"></script>
+<script>
+    var record_phone = sessionStorage.getItem("record_phone");
+    window.onload = onLoad();
+
+    function onLoad() {
+        dynamicLoading.css("static/css/login.css");
+
+        //事件绑定
+        bindEvent();
+        if (record_phone != null) {
+            $("#phone_num").val(record_phone);
+        }
+        $('.common_input').each(function () {
+            if ($(this).val() != "") {
+                $(this).next().css("display", "inline-block");
+            } else {
+                $(this).next().css("display", "none");
+            }
+        })
+
+        //判断是否在倒计时
+        countDown($('.get_code'), true);
+    }
+
+    function bindEvent() {
+        //登录
+        $(".go_login").click(function () {
+            var phone = $("#phone_num").val();
+            var code = $("#code_num").val();
+            if (code == '') {
+                ocean.tip("请输入验证码！")
+                return;
+            }
+            ocean.post("api/login", {
+                phone: phone,
+                code: code
+            }, function (res) {
+                if (res.code == 0) {
+                    console.log(res);
+                    localStorage.setItem("ocean-follow-user", JSON.stringify(res.data));
+                    localStorage.setItem("ocean-follow-biz-code", res.data.bizIdentity || res.data.parentBizIdentity || "A1035554");
+                    //是否存在上一个链接且不是登录页面，存在且不是登录或注册页面--则返回上个链接，否则进入index
+                    if (!(window.location.href.indexOf('register.html') > -1 || window.location.href.indexOf('login.html') > -1)) {
+                        var redirectUri = localStorage.getItem("login-redirect-uri");
+                    }
+                    if (redirectUri) {
+                        location.href = redirectUri;
+                        localStorage.setItem("login-redirect-uri", null);
+                    } else {
+                        location.href = "index.html"
+                    }
+                } else {
+                    ocean.tip(res.data.message);
+                }
+            }, function (res) {
+                ocean.tip(res.message);
+            });
+        });
+        //注册
+        $(".go_register").click(function () {
+            window.location.href = 'register.html';
+        });
+    }
+
+    /*保存当前填写记录*/
+    function saveRecord() {
+        sessionStorage.setItem("record_phone", $("#phone_num").val());
+        sessionStorage.setItem("record_countdown", record_countdown);
+    }
+</script>
+</html>

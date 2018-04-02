@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+    <title class="title">慧学习</title>
+    <link rel="stylesheet" type="text/css" href="../../static/css/study/item.css"/>
+    <link rel="stylesheet" type="text/css" href="../../static/css/common.css"/>
+    <link rel="stylesheet" type="text/css" href="../../static/css/weui.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../static/css/swiper-3.4.2.min.css"/>
+</head>
+<body>
+<div class="common_top">
+    <!--<span class="back_btn" onclick="history.back()"><div></div></span>-->
+    <p class="title">慧学习</p>
+</div>
+<div class="common_content"></div>
+<div class="bottomBox_common"><span>大学生，我有我的底线</span></div>
+</body>
+<script type="text/javascript" src="../../static/js/jquery-3.1.1.min.js"></script>
+<script type="text/javascript" src="../../static/js/common.js"></script>
+<script type="text/javascript" src="../../static/js/weui.min.js"></script>
+<script type="text/javascript" src="../../static/js/core/underscore.js"></script>
+<script type="text/javascript" src="../../static/js/core/util.js"></script>
+<script type="text/javascript" src="../../static/js/core/core_0305.js"></script>
+<script type="text/javascript" src="../../static/js/swiper-3.4.2.jquery.min.js"></script>
+<script>
+    window.onload = onLoad();
+
+    function onLoad() {
+        loadItemData();
+    }
+
+    function loadItemData() {
+        ocean.get("api/type", {}, function (res) {
+            if (res.code == 0) {
+                console.log(res.data);
+                var list = res.data;
+                var template = _.template($('#item_list').html());
+                $('.common_content').append(template({list: list}));
+            }
+        });
+    }
+
+    function clickItem(id, title) {
+        window.location.href = 'label.html?labelId=' + id + "&type=label&titleText=" + title;
+    }
+</script>
+<script type="text/template" id="item_list">
+    <@_.each(list, function (item) {@>
+    <div class="item_box">
+        <p class="title titleSign_common"><span><@=item.parentType.name@></span></p>
+        <div class="content_row">
+            <@_.each(item.articleTypes, function (articleTypes,index) {@>
+            <span onclick="clickItem('<@=articleTypes.id@>','<@=articleTypes.name@>')"><@=articleTypes.name@></span>
+            <@});@>
+        </div>
+    </div>
+    <@ }); @>
+</script>
+</html>

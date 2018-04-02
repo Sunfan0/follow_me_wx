@@ -1,0 +1,37 @@
+.content {
+    padding: 0 15px;
+}
+
+.content p {
+    text-align: center;
+    letter-spacing: 0.06em;
+}
+
+.success_img {
+    width: 100px;
+    height: 100px;
+    display: block;
+    margin: 45px auto 28px;
+}
+
+.success_title {
+    font-size: 1.2em;
+    margin-bottom: 17px;
+    font-weight: 600;
+}
+
+.sub_title {
+    font-size: 0.95em;
+    color: #888;
+    margin-bottom: 40px;
+}
+
+.follow_btn {
+    font-size: 1.1em;
+    width: 100%;
+    height: 44px;
+    line-height: 44px;
+    background-color: #009AF2;
+    color: #fff;
+    border-radius: 4px;
+}

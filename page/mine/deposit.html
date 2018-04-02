@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+    <title class="title">提现</title>
+    <link rel="stylesheet" type="text/css" href="../../static/css/mine/deposit.css"/>
+    <link rel="stylesheet" type="text/css" href="../../static/css/common.css"/>
+    <link rel="stylesheet" type="text/css" href="../../static/css/weui.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../static/css/swiper-3.4.2.min.css"/>
+</head>
+<body>
+<div class="common_top">
+    <span class="back_btn" onclick="history.back()"><div></div></span>
+    <p class="title">提现</p>
+</div>
+<div class="common_content">
+    <div class="deposit_content">
+        <div class="money_detail">
+            ¥<input id="money_num" class="common_input" type="number"/>
+            <img class="common_clearBtn" src="../../static/img/common/clear_btn.png">
+        </div>
+        <p class="balance_text">
+            余额 <span id="balance_money"></span>元
+            <span class="overall_deposit">全部提现</span>
+        </p>
+        <div class="deposit_way">
+            <p class="way_offline">
+                <img class="way_offline_img" src="../../static/img/common/choice_1.png">
+                线下结算
+            </p>
+            <p class="way_card">
+                <img class="way_card_img" src="../../static/img/common/choice_0.png">
+                银联结算
+            </p>
+        </div>
+    </div>
+    <p class="deposit_submit">确定</p>
+</div>
+</body>
+<script type="text/javascript" src="../../static/js/jquery-3.1.1.min.js"></script>
+<script type="text/javascript" src="../../static/js/common.js"></script>
+<script type="text/javascript" src="../../static/js/weui.min.js"></script>
+<script type="text/javascript" src="../../static/js/core/underscore.js"></script>
+<script type="text/javascript" src="../../static/js/core/util.js"></script>
+<script type="text/javascript" src="../../static/js/core/core_0305.js"></script>
+<script type="text/javascript" src="../../static/js/swiper-3.4.2.jquery.min.js"></script>
+<script>
+    var userId = JSON.parse(localStorage.getItem("ocean-follow-user")).id;
+    var deposit_way = 1
+    window.onload = onLoad();
+
+    function onLoad() {
+        //用户金额
+        getMoneySum();
+
+        //全部提现
+        $(".overall_deposit").click(function () {
+            $('#money_num').val(moneySum)
+            $('#money_num').next().show();
+        })
+        //选择提现方式
+        $(".way_offline").click(function () {
+            deposit_way = 1
+            $(".way_card_img").attr("src", "../../static/img/common/choice_0.png");
+            $(".way_offline_img").attr("src", "../../static/img/common/choice_1.png");
+        })
+        /*$(".way_card").click(function () {
+            deposit_way = 2
+            $(".way_card_img").attr("src","../../static/img/common/choice_1.png");
+            $(".way_offline_img").attr("src","../../static/img/common/choice_0.png");
+        })*/
+        //确定提现
+        $(".deposit_submit").click(function () {
+            var loading = weui.loading('loading');
+            ocean.post("api/submit_tx", {
+                userId: userId,
+                money: $('#money_num').val()
+            }, function (res) {
+                loading.hide();
+                if (res.code == 0) {
+                    console.log(res);
+                    ocean.tip("提现申请提交成功", function () {
+                        history.back();
+                    });
+                }
+            });
+        })
+    }
+    function getMoneySum() {
+        ocean.post("api/member", {
+            id: userId
+        }, function (res) {
+            if (res.code == 0) {
+                console.log(res.data);
+                $("#balance_money").text(toThousands(res.data.brokerage))
+            }
+        });
+    }
+</script>
+</html>

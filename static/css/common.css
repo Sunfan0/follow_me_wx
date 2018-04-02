@@ -1,0 +1,193 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    font-family: 'PingFang SC', 'STHeitiSC-Light', 'Helvetica-Light', arial, sans-serif !important;
+}
+
+/*分割线样式*/
+.hr_common {
+    width: 100%;
+    height: 8px;
+    background-color: #f9f9f9;
+}
+
+/*title标记样式*/
+.titleSign_common {
+    font-size: 1.04em;
+    font-weight: 600;
+    /*font-size: 4vw;*/
+    color: #333333;
+    margin-bottom: 1.7%;
+    letter-spacing: 1px;
+}
+
+.titleSign_common:before {
+    content: "\a0"; /*不换行空格*/
+    width: 4px;
+    height: 16px;
+    display: inline-block;
+    background-color: #0092f1;
+    margin-right: 7px;
+    margin-bottom: 3px;
+    vertical-align: middle;
+}
+
+.titleSign_common span {
+    vertical-align: middle;
+}
+
+.titleSign_common .other {
+    font-size: 0.9em;
+    font-weight: normal;
+    margin-bottom: 1.7%;
+    float: right;
+    color: #009af2;
+}
+
+/*敬请期待图片样式*/
+.comingImg_common {
+    width: 100%;
+    height: 99px;
+    background-image: url("../img/index/coming.png");
+    background-position: center;
+    background-size: cover;
+    border-radius: 5px;
+}
+
+/*统一底部样式*/
+.bottomBox_common {
+    width: 100%;
+    background-color: #f9f9f9;
+    text-align: center;
+    padding: 37px 0;
+    font-size: 0.8em;
+}
+
+.bottomBox_common span {
+    color: #666;
+}
+
+.bottomBox_common span:before, .bottomBox_common span:after {
+    content: "\a0"; /*不换行空格*/
+    width: 23.5%;
+    height: 1px;
+    display: inline-block;
+    vertical-align: middle;
+    background-color: #d8d8d8;
+}
+
+.bottomBox_common span:before {
+    margin-right: 10px;
+}
+
+.bottomBox_common span:after {
+    margin-left: 10px;
+}
+
+/*统一输入框样式*/
+input {
+    outline: 0;
+    border: 0;
+}
+
+textarea {
+    resize: none;
+    outline: 0;
+    border: 0;
+}
+
+input::-webkit-input-placeholder {
+    color: #999 !important;
+}
+
+textarea::-webkit-input-placeholder {
+    color: #999 !important;
+}
+
+input:not([type]):disabled {
+    background-color: transparent;
+}
+
+input:disabled {
+    color: #000;
+}
+
+.common_clearBtn {
+    width: 14px;
+    height: 14px;
+    vertical-align: middle;
+    display: none;
+}
+
+.common_select {
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+}
+
+/*顶部title样式*/
+.common_top {
+    display: none;
+    background-color: #009AF2;
+    color: #fff;
+    text-align: center;
+    height: 44px;
+    width: 100%;
+    overflow: hidden;
+    position: fixed;
+    top: 0;
+    z-index: 50;
+}
+
+.common_top .back_btn {
+    position: fixed;
+    top: 0px;
+    left: 5px;
+}
+
+.common_top .back_btn div {
+    width: 9px;
+    height: 15px;
+    margin-top: 13px;
+    margin-left: 10px;
+    background-image: url("../img/common/back_btn.png");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+
+.common_top .title {
+    width: 100%;
+    line-height: 44px;
+    text-align: center;
+    font-size: 17px;
+    letter-spacing: 0.1em;
+}
+
+/*加统一title的页面样式*/
+.common_content {
+    /*margin-top: 44px;*/
+}
+
+/*选择页面样式*/
+#schoolSelect_list {
+    padding: 0 10px;
+}
+
+#schoolSelect_list .school_name {
+    color: #333333;
+    border-bottom: 1px solid #DEDEDE;
+    padding: 9px 0;
+    height: 30px;
+    line-height: 30px;
+    font-size: 1em;
+}
+
+/*下拉底部样式*/
+.weui-loadmore__bottom {
+    position: absolute;
+    left: 0;
+    margin-top: 10px;
+}

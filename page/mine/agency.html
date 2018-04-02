@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+    <title class="title">代理流程</title>
+    <link rel="stylesheet" type="text/css" href="../../static/css/mine/agency.css"/>
+    <link rel="stylesheet" type="text/css" href="../../static/css/common.css"/>
+    <link rel="stylesheet" type="text/css" href="../../static/css/weui.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../static/css/swiper-3.4.2.min.css"/>
+</head>
+<body>
+<div class="common_top">
+    <span class="back_btn" onclick="history.back()"><div></div></span>
+    <p class="title">代理流程</p>
+</div>
+<div class="common_content">
+    <p class="top_text" style="visibility: hidden">审核需2-5个工作日</p>
+    <div class="agency_flow">
+        <div class="text agency_flow_1"><span>申请<br>代理</span></div>
+        <div class="sign">>></div>
+        <div class="text agency_flow_2"><span>审核中</span></div>
+        <div class="sign">>></div>
+        <div class="text agency_flow_3"><span>审核<br>通过</span></div>
+        <!--<div class="sign">>></div>-->
+        <!--<div class="text agency_flow_4"><span>获取<br>二维码</span></div>-->
+    </div>
+    <div class="agency_body flow_1">
+        <p class="content_text">代理所需信息录入</p>
+        <p class="agree_text">
+            <img class="agree_choice" src="../../static/img/common/choice_1.png">
+            <span>移动业务代理协议</span>
+        </p>
+        <p class="flow_btn flow1_sub_btn">提交申请</p>
+    </div>
+    <div class="agency_body flow_2">
+        <p class="content_text">申请审核中，请耐心等待</p>
+    </div>
+    <div class="agency_body flow_3">
+        <p class="content_text">恭喜您已经成为代理商了！<br>点击按钮获取二维码</p>
+        <p class="flow_btn flow3_sub_btn">确定</p>
+    </div>
+    <div class="agency_body flow_4">
+        <img class="content_code" src="../../static/img/index/item_card.png">
+        <p class="flow4_btn flow4_share_btn" style="margin-right: 15px">分享</p>
+        <p class="flow4_btn flow4_down_btn">下载</p>
+    </div>
+</div>
+</body>
+<script type="text/javascript" src="../../static/js/jquery-3.1.1.min.js"></script>
+<script type="text/javascript" src="../../static/js/common.js"></script>
+<script type="text/javascript" src="../../static/js/weui.min.js"></script>
+<script type="text/javascript" src="../../static/js/core/core_0305.js"></script>
+<script type="text/javascript" src="../../static/js/swiper-3.4.2.jquery.min.js"></script>
+<script>
+    var isAgree = true;
+    var agencyId = '';
+    var userId = JSON.parse(localStorage.getItem("ocean-follow-user")).id;
+    window.onload = onLoad();
+
+    function onLoad() {
+        ocean.post("api/find/apply", {
+            userId: userId
+        }, function (res) {
+            if (res.code == 0) {
+                console.log(res);
+                if(res.data){
+                    agencyId = res.data.id;
+                    switch (res.data.state){
+                        case 'AUDIT':
+                            $(".agency_flow_2").addClass('on');
+                            $(".flow_2").css("display", "block");
+                            break;
+                        case 'PASS':
+                            $(".agency_flow_3").addClass('on');
+                            $(".flow_3").css("display", "block");
+                            break;
+                        /*case 'REFUSE':
+                            $(".agency_flow_1").addClass('on');
+                            $(".flow_1").css("display", "block");
+                            $(".top_text").css("visibility", "visible");
+                            break;*/
+                        case 'BUSINESS':
+                            location.href = "../mine/business.html";
+                            break;
+                        default:
+                            $(".agency_flow_1").addClass('on');
+                            $(".flow_1").css("display", "block");
+                            $(".top_text").css("visibility", "visible");
+                            break;
+                    }
+                }else{
+                    $(".agency_flow_1").addClass('on');
+                    $(".flow_1").css("display", "block");
+                    $(".top_text").css("visibility", "visible");
+                }
+            }
+        }, function (res) {
+            ocean.tip(res.message);
+        });
+
+
+        //同意协议
+        $(".agree_text").click(function () {
+            var strsrc = $(".agree_choice").attr("src");
+            var cuurent = strsrc.substring(strsrc.length - 4, strsrc.length - 5);
+            if (cuurent == 0) {
+                isAgree = true;
+                $(".agree_choice").attr("src","../../static/img/common/choice_1.png");
+            } else {
+                isAgree = false;
+                $(".agree_choice").attr("src","../../static/img/common/choice_0.png");
+            }
+        })
+
+        //提交申请
+        $(".flow1_sub_btn").click(function () {
+            if(!isAgree){
+                ocean.tip("请先同意移动业务代理协议");
+                return;
+            }
+            var loading = weui.loading('loading');
+            ocean.post("api/apply", {
+                userId: userId
+            }, function (res) {
+                loading.hide();
+                if (res.code == 0) {
+                    $(".agency_flow_1").removeClass('on');
+                    $(".flow_1").css("display", "none");
+                    $(".agency_flow_2").addClass('on');
+                    $(".flow_2").css("display", "block");
+                }else{
+                    ocean.tip(res.data.message);
+                }
+            });
+        })
+
+        //审核通过--确定
+        $(".flow3_sub_btn").click(function () {
+            var loading = weui.loading('loading');
+            ocean.post("api/apply_affirm", {
+                id: agencyId
+            }, function (res) {
+                loading.hide();
+                if (res.code == 0) {
+                    location.href = "../mine/business.html";
+                }
+            });
+        })
+
+        //获取二维码
+        /*$(".flow3_sub_btn").click(function () {
+            $(".agency_flow_3").removeClass('on');
+            $(".flow_3").css("display", "none");
+            $(".agency_flow_4").addClass('on');
+            $(".flow_4").css("display", "block");
+        })*/
+
+    }
+
+</script>
+</html>

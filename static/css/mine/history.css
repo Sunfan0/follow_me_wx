@@ -1,0 +1,47 @@
+body {
+    background-color: #f9f9f9;
+}
+
+.common_content {
+    padding-top: 10px;
+}
+
+.history_content {
+    padding: 0 10px;
+    background-color: #fff;
+}
+
+.history_content .item_detail {
+    border-bottom: 1px solid #f9f9f9;
+    padding: 13px 0 14px;
+}
+
+.history_content .item_detail p {
+    position: relative;
+}
+
+.history_content .item_detail .right {
+    position: absolute;
+    right: 0;
+}
+
+.history_content .item_detail .title {
+    font-size: 16px;
+}
+
+.history_content .item_detail .title .right {
+    font-size: 18px;
+}
+
+.history_content .item_detail .detail {
+    font-size: 14px;
+    color: #999;
+}
+
+.history_content .item_detail .detail .green {
+    color: #1AC583;
+}
+
+.history_content .item_detail .detail .yellow {
+    color: #FFA135;
+}

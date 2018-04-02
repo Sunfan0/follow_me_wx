@@ -1,0 +1,49 @@
+body {
+    background-color: #f9f9f9;
+}
+
+.list_content {
+    background-color: #fff;
+    padding: 0 15px;
+}
+
+.info_box {
+    border-bottom: 1px solid #eeeeee;
+    overflow: hidden;
+    padding: 10px 0;
+}
+
+.info_box:last-child {
+    border-bottom: 0;
+}
+
+.info_box .left {
+    width: 60%;
+    height: 62px;
+    float: left;
+}
+
+.info_box .left .name {
+    font-size: 0.96em;
+    font-weight: 600;
+    color: #333;
+    line-height: 20px;
+    height: 38px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.info_box .left .num {
+    font-size: 13px;
+    color: #999;
+    line-height: 12px;
+    margin-top: 14px;
+}
+
+.info_box .right {
+    width: 112px;
+    height: 63px;
+    float: right;
+    background-position: center;
+    background-size: cover;
+}

@@ -1,0 +1,148 @@
+body {
+    background-color: #f9f9f9;
+    font-size: 1em;
+}
+
+.common_top .title {
+    /*color: rgba(255, 255, 255, 0.5);*/
+}
+
+.common_top .title span:first-child {
+    /*margin-right: 26px;*/
+}
+
+.common_top .title .on {
+    padding-bottom: 10px;
+    border-bottom: 2px solid #fff;
+    box-shadow: 0 1px 0 0 #CCCCCC;
+    color: #fff;
+}
+
+.business_page .header_content {
+    background-color: #fff;
+    padding: 23px 15px 20px;
+}
+
+.business_page .header_content .money_title {
+    color: #999;
+    font-size: 14px;
+}
+
+.business_page .header_content .money_sum {
+    font-size: 36px;
+}
+
+.business_page .header_content .btn_div {
+    color: #009AF2;
+    text-align: right;
+}
+
+.business_page .header_content .btn_div .deposit_rule {
+    float: left;
+    font-size: 14px;
+}
+
+.business_page .header_content .btn_div .deposit_go {
+    margin-right: 10px;
+}
+
+.business_page .header_content .btn_div .deposit_go, .deposit_history {
+    width: 66px;
+    height: 24px;
+    line-height: 24px;
+    font-size: 12px;
+    display: inline-block;
+    text-align: center;
+    border: 1px solid #009AF2;
+    border-radius: 2px;
+}
+
+.business_page .history_title {
+    font-size: 14px;
+    line-height: 40px;
+    padding-left: 10px;
+}
+
+.business_page .history_month {
+    height: 44px;
+    background-color: #fff;
+    padding: 0 15px;
+    overflow-y: hidden;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+}
+
+.business_page .history_month::-webkit-scrollbar {
+    display: none;
+}
+
+.business_page .history_month .month_btn {
+    margin-right: 24px;
+    line-height: 44px;
+}
+
+.business_page .history_month .on {
+    color: #009AF2;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #009AF2;
+}
+
+.business_page .business_history .time {
+    font-size: 14px;
+    line-height: 32px;
+    padding-left: 15px;
+    color: #999;
+}
+
+.business_page .business_history .business_content {
+    padding: 0 15px;
+    background-color: #fff;
+}
+
+.business_page .business_history .business_detail {
+    padding: 14px 0;
+    border-bottom: 1px solid #f9f9f9;
+}
+
+.business_page .business_history .business_detail p {
+    text-align: left;
+    line-height: 20px;
+}
+
+.business_page .business_history .business_detail .right {
+    float: right;
+}
+
+.business_page .business_history .business_detail .dark {
+    font-size: 16px;
+}
+
+.business_page .business_history .business_detail .light {
+    font-size: 14px;
+    color: #999;
+}
+
+.code_page {
+    margin: 0 15px;
+    text-align: center;
+    display: none;
+}
+.code_page .content_code {
+    width: 175px;
+    height: 175px;
+    display: block;
+    margin: 0 auto;
+    padding-top: 45px;
+}
+
+.code_page .flow4_btn {
+    margin-top: 45px;
+    display: inline-block;
+    width: 45%;
+    height: 44px;
+    line-height: 44px;
+    border-radius: 4px;
+    background-color: #009AF2;
+    color: #fff;
+}

@@ -1,0 +1,48 @@
+.input_content {
+    position: relative;
+    width: 92%;
+    height: 140px;
+    margin: 0 auto 80px;
+    padding-top: 40px;
+}
+
+.input_content .suggest_text {
+    width: -webkit-fill-available;
+    height: 110px;
+    padding: 10px 10px 30px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+}
+
+.input_content .text_num {
+    position: absolute;
+    right: 1px;
+    bottom: -11px;
+    font-size: 15px;
+    width: 96%;
+    padding-right: 5px;
+    background-color: #fff;
+    text-align: right;
+}
+
+.send_btn {
+    width: 92%;
+    height: 44px;
+    line-height: 44px;
+    margin: 0 auto;
+    text-align: center;
+    border-radius: 4px;
+    background-color: #009AF2;
+    color: #fff;
+}
+
+.footer_text {
+    width: 92%;
+    margin: 20px auto 0;
+    color: #8EA8B2;
+    font-size: 15px;
+}
+
+.footer_text span {
+    color: #009AF2;
+}

@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+    <title class="title">慧学习</title>
+    <!--<link rel="stylesheet" type="text/css" href="../../static/css/study/index.css"/>-->
+    <!--<link rel="stylesheet" type="text/css" href="../../static/css/common.css"/>-->
+    <link rel="stylesheet" type="text/css" href="../../static/css/weui.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../static/css/swiper-3.4.2.min.css"/>
+</head>
+<body>
+<div class="content" style="display: none">
+    <div class="banner">
+        <section class="pc-banner">
+            <div class="swiper-container">
+                <div class="swiper-wrapper" id="banner_content">
+                    <div class="swiper-slide swiper-slide-center none-effect swiper-slide-duplicate swiper-slide-duplicate-next">
+                        <img class="lazy" src="../../static/img/index/coming.png">
+                    </div>
+                </div>
+                <div class="swiper-pagination"></div>
+            </div>
+        </section>
+    </div>
+    <div class="body_title">
+        <div class="title_img">
+            <div class="title_item" onclick="clickItem('8f3dfce00a4411e8a6d0b888e3382386','围绕党中央')">
+                <img src="../../static/img/index/studyItem_01.png">
+                <p>围绕党中央</p>
+            </div>
+            <div class="title_item" onclick="clickItem('05f3d6e70f9511e88b4d00163e0077ec','中国特色')">
+                <img src="../../static/img/index/studyItem_02.png">
+                <p>中国特色</p>
+            </div>
+            <div class="title_item" onclick="clickItem('2e9f1ef30f9511e88b4d00163e0077ec','大学生理想信念')">
+                <img src="../../static/img/index/studyItem_03.png">
+                <p>大学生理想信念</p>
+            </div>
+            <div class="title_item" onclick="clickItem('baabc3d70f9511e88b4d00163e0077ec','懂点系列')">
+                <img src="../../static/img/index/studyItem_04.png">
+                <p>懂点系列</p>
+            </div>
+        </div>
+        <div class="title_img">
+            <div class="title_item" onclick="clickItem('3f228ade0f9511e88b4d00163e0077ec','国学经典')">
+                <img src="../../static/img/index/studyItem_05.png">
+                <p>国学经典</p>
+            </div>
+            <div class="title_item" onclick="clickItem('a7ced93f0a4411e8a6d0b888e3382386','马列毛邓')">
+                <img src="../../static/img/index/studyItem_06.png">
+                <p>马列毛邓</p>
+            </div>
+            <div class="title_item" onclick="clickItem('da1997e71ae211e8a6d0b888e3382386','学习平台')">
+                <img src="../../static/img/index/studyItem_07.png">
+                <p>学习平台</p>
+            </div>
+            <div class="title_item" onclick="clickItem('')">
+                <img src="../../static/img/index/studyItem_08.png">
+                <p>更多</p>
+            </div>
+        </div>
+    </div>
+    <div class="hr_common"></div>
+    <div class="body_article">
+        <div class="name_sign"><img src="../../static/img/index/article.png"></div>
+        <div class="recommend_info">
+            <p id="article_history" style="display: none">您上次阅读了<span id="readArticle"></span><span id="history_time"></span>
+            </p>
+            <p id="article_recommend" style="display: none">推荐您阅读<span id="recommendArticle"></span></p>
+        </div>
+        <div class="right_img"><img src="../../static/img/common/right_btn.png"></div>
+    </div>
+    <div class="body_topic">
+        <div class="hr_common"></div>
+        <div class="common_content"></div>
+    </div>
+    <div class="body_group">
+        <div class="hr_common"></div>
+        <div class="item_box">
+            <!--<p class="titleSign_common"><span>校园必备套餐包</span></p>-->
+            <div class="item_img">
+                <div class="info" onclick="ocean.tip('敬请期待...');">
+                    <div class="img" style="background-image: url('../../static/img/index/left_eat.png')"></div>
+                    <p class="name">吃货向左</p>
+                </div>
+                <div class="info" onclick="ocean.tip('敬请期待...');">
+                    <div class="img" style="background-image: url('../../static/img/index/right_travel.png')"></div>
+                    <p class="name">驴友向右</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="bottomBox_common"><span>大学生，我有我的底线</span></div>
+</div>
+</body>
+<script type="text/javascript" src="../../static/js/jquery-3.1.1.min.js"></script>
+<!--<script type="text/javascript" src="../../static/js/common.js"></script>-->
+<script type="text/javascript" src="../../static/js/weui.min.js"></script>
+<script type="text/javascript" src="../../static/js/core/underscore.js"></script>
+<script type="text/javascript" src="../../static/js/core/util.js"></script>
+<script type="text/javascript" src="../../static/js/core/core_0305.js"></script>
+<script type="text/javascript" src="../../static/js/swiper-3.4.2.jquery.min.js"></script>
+<script>
+    window.onload = onLoad();
+
+    function onLoad() {
+        fetchPageData();
+        loadItemData();
+        dynamicLoading.css("../../static/css/study/index.css");
+        dynamicLoading.css("../../static/css/common.css");
+        dynamicLoading.js("../../static/js/common.js");
+        setTimeout(function () {
+            $(".content").show();
+        }, 50)
+    }
+
+    function fetchPageData() {
+        if (sessionStorage.getItem("index-page-data")) {
+            var data = JSON.parse(sessionStorage.getItem("index-page-data"));
+            console.log(data);
+            initPage(data);
+        } else {
+            ocean.get("api/banner", {}, function (res) {
+                if (res.code == 0) {
+                    console.log(res.data);
+                    sessionStorage.setItem("index-page-data", JSON.stringify(res.data));
+                    initPage(res.data);
+                }
+            }, function (error) {
+                ocean.tip(error);
+            });
+        }
+
+        var userId = JSON.parse(localStorage.getItem("ocean-follow-user") || "{}").id;
+
+        ocean.post("api/article_footprint", {userId: userId}, function (res) {
+            if (res.code == 0) {
+                console.log(res.data);
+                var textLength1 = 8;
+                var textLength2 = 11;
+                if(res.data.readArticle==undefined){
+                    $("#article_recommend").show();
+                    $("#article_recommend").css("padding-top","8px");
+                    $(".body_article .right_img").css("line-height","28px");
+                    if (res.data.recommendArticle.title.length > textLength2) {
+                        $("#recommendArticle").html((" " + res.data.recommendArticle.title).substr(0, textLength2) + "...");
+                    } else {
+                        $("#recommendArticle").html((" " + res.data.recommendArticle.title));
+                    }
+                    var recommendArticle = res.data.recommendArticle.id;
+                    $(".body_article").click(function () {
+                        window.location.href = 'detail.html?detailId=' + recommendArticle + "&from=post";
+                    });
+                }else{
+                    $("#article_history").show();
+                    $("#article_recommend").show();
+                    if (res.data.readArticle.title.length > textLength1) {
+                        $("#readArticle").html((" " + res.data.readArticle.title).substr(0, textLength1) + "...");
+                    } else {
+                        $("#readArticle").html((" " + res.data.readArticle.title));
+                    }
+                    if (res.data.recommendArticle.title.length > textLength2) {
+                        $("#recommendArticle").html((" " + res.data.recommendArticle.title).substr(0, textLength2) + "...");
+                    } else {
+                        $("#recommendArticle").html((" " + res.data.recommendArticle.title));
+                    }
+                    var recommendArticle = res.data.recommendArticle.id;
+                    $(".body_article").click(function () {
+                        window.location.href = 'detail.html?detailId=' + recommendArticle + "&from=article";
+                    });
+
+                    var time;
+                    var i1 = res.data.readArticle.readTime;
+                    var i2 = new Date();
+                    var date1 = new Date(i1);
+                    var date2 = new Date(i2);
+                    if (parseInt((date2 - date1) / 1000 / 60 / 60) < 1) {
+                        time = parseInt((date2 - date1) / 1000 / 60) + "分钟";
+                    } else if (parseInt((date2 - date1) / 1000 / 60 / 60 / 24) < 1) {
+                        time = ((date2 - date1) / 1000 / 60 / 60).toFixed(1) + "小时";
+                    } else {
+                        time = ((date2 - date1) / 1000 / 60 / 60 / 24).toFixed(0) + "天";
+                    }
+                    $("#history_time").html(time + "前");
+                }
+            }
+        }, function (error) {
+            ocean.tip(error);
+        });
+
+    }
+
+    function loadItemData() {
+        ocean.post("api/post_list", {}, function (res) {
+            if (res.code == 0) {
+                console.log(res.data);
+                var list = res.data;
+                var template = _.template($('#item_list').html());
+                $('.common_content').append(template({list: list}));
+                $(".other").click(function () {
+                    var typeId = $(this).data("id");
+                    var title = $(this).data("name");
+                    window.location.href = "label.html?labelId=" + typeId + "&type=post&titleText=" + title;
+                });
+                $(".item_info").click(function () {
+                    var id = $(this).data("id");
+                    window.location.href = "detail.html?detailId=" + id + "&from=post";
+                });
+
+            }
+        });
+    }
+
+    function initPage(data) {
+        var bannerData = data;
+        $("#banner_content").html("");
+        $.each(bannerData, function (index, item) {
+            addBannerItem(item);
+        });
+        new ocean_banner('.swiper-container');
+    }
+
+    function addBannerItem(banner) {
+        var clazz = "type_" + banner.type.toLowerCase() + " swiper-slide swiper-slide-center none-effect";
+        var data = "";
+        if (banner.type == "URL") {
+            data = banner.url;
+        } else if (banner.type == "MESSAGE") {
+            data = banner.messageId;
+        } else if (banner.type == "BOOK") {
+            data = banner.bookId;
+        }
+        var html = "<div class=\"" + clazz + "\" data-id=\"" + data + "\">\n" +
+            "    <img src=\"" + banner.picture + "\">\n" +
+            "</div>";
+        $("#banner_content").append(html);
+    }
+
+    function clickItem(id, title) {
+        if (id == '') {
+            window.location.href = 'item.html';
+        } else {
+            window.location.href = 'label.html?labelId=' + id + "&type=parentLabel&titleText=" + title;
+        }
+    }
+</script>
+<script type="text/template" id="item_list">
+    <@_.each(list, function (item) {@>
+    <div class="item_body">
+        <p class="titleSign_common"><span><@=item.parentType.name@></span>
+            <span class="other" data-id="<@=item.parentType.id@>">更多</span>
+        </p>
+        <div class="item_box">
+            <@_.each(item.articles, function (articles,index) {@>
+            <@if(index<2){@>
+            <div class="item_info" data-id="<@=articles.id@>">
+                <div class="left">
+                    <@if(articles.title.length>10){@>
+                    <p class="name"><@=articles.title.substr(0,10)@>...</p>
+                    <@}else{@>
+                    <p class="name"><@=articles.title@></p>
+                    <@}@>
+                    <p class="num"><span><@=articles.pageView@></span>人阅读</p>
+                </div>
+                <div class="right" style="background-image: url('<@=articles.picture@>')"></div>
+            </div>
+            <@}@>
+            <@});@>
+        </div>
+    </div>
+    <@ }); @>
+</script>
+</html>

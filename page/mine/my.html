@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+    <title class="title">个人中心</title>
+    <link rel="stylesheet" type="text/css" href="../../static/css/mine/mine_0228.css"/>
+    <link rel="stylesheet" type="text/css" href="../../static/css/common.css"/>
+    <link rel="stylesheet" type="text/css" href="../../static/css/weui.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../static/css/swiper-3.4.2.min.css"/>
+</head>
+<body>
+<div class="common_top">
+    <!--<span class="back_btn" onclick="history.back()"><div></div></span>-->
+    <p class="title">个人中心</p>
+</div>
+<div class="common_content">
+    <div class="header_img">
+        <div class="head head_bg" style="background-image: url('../../static/img/common/user_head.jpg')"></div>
+        <div class="color_bg"></div>
+        <div class="head head_small" style="background-image: url('../../static/img/common/user_head.jpg')"></div>
+        <p id="nickName"></p>
+    </div>
+    <div class="hr_common"></div>
+    <div class="item_body">
+        <div class="mine_item">
+            <img class="sign_img" src="../../static/img/mine/item_01.png">
+            大学<span class="right" id="school"></span>
+        </div>
+        <div class="mine_item">
+            <img class="sign_img" src="../../static/img/mine/item_02.png">
+            专业<span class="right" id="speciality"></span>
+        </div>
+        <div class="mine_item">
+            <img class="sign_img" src="../../static/img/mine/item_03.png">
+            姓名<span class="right" id="name"></span>
+        </div>
+    </div>
+    <div class="hr_common"></div>
+    <div class="item_body">
+        <div class="mine_item" id="agency" style="display: none;">
+            <img class="sign_img" src="../../static/img/mine/item_04.png">
+            <span id="agency_title">申请代理</span>
+            <span class="right"><span id="applyState"></span><img src="../../static/img/common/right_btn.png"></span>
+        </div>
+
+        <div class="mine_item" id="qrcode" style="display: none;">
+            <img class="sign_img" src="../../static/img/mine/item_07.png">
+            我的任务<span class="right"><img src="../../static/img/common/right_btn.png"></span>
+        </div>
+
+        <div class="mine_item" onclick="location.href='../study/label.html?isRecord=1'">
+            <img class="sign_img" src="../../static/img/mine/item_05.png">
+            我的足迹<span class="right"><img src="../../static/img/common/right_btn.png"></span>
+        </div>
+
+        <div class="mine_item" id="question">
+            <img class="sign_img" src="../../static/img/mine/item_06.png">
+            问题或建议<span class="right"><img src="../../static/img/common/right_btn.png"></span>
+        </div>
+    </div>
+    <div class="bottomBox_common"><span>大学生，我有我的底线</span></div>
+</div>
+</body>
+<script type="text/javascript" src="../../static/js/jquery-3.1.1.min.js"></script>
+<script type="text/javascript" src="../../static/js/common.js"></script>
+<script type="text/javascript" src="../../static/js/weui.min.js"></script>
+<script type="text/javascript" src="../../static/js/core/core_0305.js"></script>
+<script type="text/javascript" src="../../static/js/swiper-3.4.2.jquery.min.js"></script>
+<script>
+    var userId, bizIdentity;
+    var loadData = function () {
+        console.log(JSON.parse(localStorage.getItem("ocean-follow-user")));
+        userId = JSON.parse(localStorage.getItem("ocean-follow-user") || "{}").id;
+        bizIdentity = JSON.parse(localStorage.getItem("ocean-follow-user") || "{}").bizIdentity;
+        ocean.post("api/member", {
+            id: userId
+        }, function (res) {
+            if (res.code == 0) {
+                if (res.data) {
+                    console.log(res.data);
+                    $("#school").html(res.data.school);
+                    $("#speciality").html(res.data.speciality);
+                    $("#name").html(res.data.name);
+                    $("#nickName").html(res.data.nickName);
+                    $(".head").css("background-image", "url(" + res.data.head + ")");
+
+                    if (res.data.parentUserType == "FIRST") {
+                        $("#agency").show();
+                    }
+
+                    if (res.data.userType == 'SECOND' || res.data.userType == 'FIRST') {
+                        $("#qrcode").show();
+                        $("#agency").show();
+
+                        $("#agency_title").html("我的佣金");
+                        $("#applyState").html("");
+                        $("#agency").click(function () {
+                            location.href = "../mine/business.html";
+                        });
+                    } else {
+                        switch (res.data.applyState) {
+                            case 'AUDIT':
+                                $("#applyState").html("审核中");
+                                break;
+                            case 'PASS':
+                                $("#applyState").html("审核通过");
+                                break;
+                            case 'REFUSE':
+                                $("#applyState").html("审核未通过");
+                                break;
+                            case 'BUSINESS':
+                                $("#agency_title").html("我的佣金");
+                                $("#applyState").html("");
+                                $("#agency").click(function () {
+                                    location.href = "../mine/business.html";
+                                });
+                                break;
+                            default:
+                                $("#applyState").html("");
+                                break;
+                        }
+                    }
+                }
+            }
+        }, function (res) {
+            ocean.tip(res.message);
+        });
+    };
+
+    window.onload = onLoad();
+
+    function onLoad() {
+        judgeLogin(loadData);
+
+        $("#agency").click(function () {
+            location.href = "../mine/agency.html";
+        });
+
+        $("#qrcode").click(function () {
+            location.href = "../mine/qr_code.html?userId=" + userId + "&bizIdentity=" + bizIdentity;
+        });
+
+
+        $("#question").click(function () {
+            location.href = "../mine/suggest.html";
+        });
+    }
+</script>
+</html>

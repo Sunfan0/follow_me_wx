@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+    <title class="title">选择大学校/院校</title>
+    <link rel="stylesheet" type="text/css" href="static/css/common.css"/>
+    <link rel="stylesheet" type="text/css" href="static/css/weui.min.css"/>
+</head>
+<body>
+<div class="common_top">
+    <span class="back_btn" onclick="history.back()"><div></div></span>
+    <p class="title">选择大学校/院校</p>
+</div>
+<div class="common_content" id="schoolSelect_list"></div>
+</body>
+<script type="text/javascript" src="static/js/jquery-3.1.1.min.js"></script>
+<script type="text/javascript" src="static/js/common.js"></script>
+<script type="text/javascript" src="static/js/weui.min.js"></script>
+<script type="text/javascript" src="static/js/core/core_0305.js"></script>
+<script>
+    var dataType = ocean.getRequestParameter("dataType");
+    window.onload = onLoad();
+
+    function onLoad() {
+        switch (dataType) {
+            case 'school':
+                $(".common_top .title").text("选择大学校/院校");
+                getSelectList("api/school");
+                break;
+            case 'specialty':
+                $(".common_top .title").text("选择专业");
+                // getSelectList("resources/biz/api/school");
+                break;
+            case 'card_type':
+                $(".common_top .title").text("证件类型");
+                var data = [];
+                data.push({id: 0, name: '身份证'});
+                data.push({id: 1, name: '学生证'});
+                for (var i = 0; i < data.length; i++) {
+                    var strItem = "<p class='school_name' onclick='clickSelectItem(\"" + data[i].name + "\",\"" + data[i].id + "\")'>" + data[i].name + "</p>";
+                    $("#schoolSelect_list").append(strItem)
+                }
+                break;
+        }
+    }
+
+    /*加载选择列表*/
+    function getSelectList(url) {
+        ocean.get(url, {}, function (res) {
+            console.log(res);
+            if (res.code == 0) {
+                console.log(res);
+                data = res.data;
+                for (var i = 0; i < data.length; i++) {
+                    var strItem = "<p class='school_name' onclick='clickSelectItem(\"" + data[i].name + "\",\"" + data[i].id + "\")'>" + data[i].name + "</p>";
+                    $("#schoolSelect_list").append(strItem)
+                }
+            }
+        });
+
+    }
+
+    /*选择项的点击事件*/
+    function clickSelectItem(name, id) {
+        if (dataType == 'school' || dataType == 'specialty') {
+            sessionStorage.setItem("record_" + dataType, name);
+            sessionStorage.setItem("record_" + dataType + "_id", id);
+        } else {
+            sessionStorage.setItem(dataType, name);
+            sessionStorage.setItem(dataType + "_id", id);
+        }
+        window.location.href = 'register.html';
+        //history.back();
+    }
+</script>
+</html>

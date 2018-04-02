@@ -1,0 +1,114 @@
+.top_text {
+    color: #FC7171;
+    height: 68px;
+    line-height: 68px;
+    text-align: center;
+    font-size: 0.8em;
+}
+
+.agency_flow {
+    padding: 0 8%;
+    display: flex;
+    -webkit-display: flex;
+    justify-content: space-between;
+    -webkit-justify-content: space-between;
+}
+
+.agency_flow .text {
+    width: 60px;
+    height: 60px;
+    color: #009AF2;
+    border-radius: 50%;
+    border: 1px solid #009AF2;
+    display: table;
+}
+
+.agency_flow .on {
+    background-color: #009AF2;
+    color: #fff;
+}
+
+@media screen and (max-width: 350px) {
+    .agency_flow .text {
+        width: 55px;
+        height: 55px;
+    }
+
+    .agency_flow {
+        padding: 0 4%;
+    }
+}
+
+.agency_flow .text span {
+    text-align: center;
+    display: table-cell;
+    vertical-align: middle;
+    font-size: 0.9em;
+}
+
+.agency_flow .sign {
+    color: #009AF2;
+    line-height: 60px;
+}
+
+.agency_body {
+    margin: 0 15px;
+    text-align: center;
+    display: none;
+}
+
+.agency_body .content_text {
+    margin-top: 97px;
+    font-size: 0.9em;
+}
+
+.agency_body .flow_btn {
+    width: 100%;
+    height: 44px;
+    line-height: 44px;
+    margin-top: 30px;
+    border-radius: 4px;
+    background-color: #009AF2;
+    color: #fff;
+}
+
+.flow_1 .content_text {
+    color: #666;
+}
+
+.flow_1 .agree_text {
+    color: #009AF2;
+    margin-top: 145px;
+}
+
+.flow_1 .agree_text .agree_choice {
+    width: 18px;
+    height: 18px;
+    margin-right: 10px;
+    vertical-align: text-bottom;
+}
+
+.flow_2 .content_text {
+    color: #7A98A4;
+}
+
+.flow_3 .flow_btn {
+    margin-top: 174px;
+}
+
+.flow_4 .content_code {
+    width: 175px;
+    height: 175px;
+    display: block;
+    margin: 54px auto 72px;
+}
+
+.flow_4 .flow4_btn {
+    display: inline-block;
+    width: 45%;
+    height: 44px;
+    line-height: 44px;
+    border-radius: 4px;
+    background-color: #009AF2;
+    color: #fff;
+}

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+    <title class="title">问题或建议</title>
+    <link rel="stylesheet" type="text/css" href="../../static/css/mine/suggest.css"/>
+    <link rel="stylesheet" type="text/css" href="../../static/css/common.css"/>
+    <link rel="stylesheet" type="text/css" href="../../static/css/weui.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../static/css/swiper-3.4.2.min.css"/>
+</head>
+<body>
+<div class="common_top">
+    <span class="back_btn" onclick="history.back()"><div></div></span>
+    <p class="title">问题或建议</p>
+</div>
+<div class="common_content">
+    <div class="input_content">
+        <textarea class="suggest_text" placeholder="请描述您的问题和建议"></textarea>
+        <span class="text_num">0/500</span>
+    </div>
+    <p class="send_btn">发送</p>
+    <div class="footer_text">
+        <p>紧急问题请拨打客服电话<span> 029-62590000</span></p>
+        <p>电话接听时间 10:00-20:00</p>
+    </div>
+</div>
+</body>
+<script type="text/javascript" src="../../static/js/jquery-3.1.1.min.js"></script>
+<script type="text/javascript" src="../../static/js/common.js"></script>
+<script type="text/javascript" src="../../static/js/weui.min.js"></script>
+<script type="text/javascript" src="../../static/js/core/core_0305.js"></script>
+<script type="text/javascript" src="../../static/js/swiper-3.4.2.jquery.min.js"></script>
+<script>
+    window.onload = onLoad();
+    function onLoad() {
+        $(".suggest_text").keyup(function () {
+            var len = $(this).val().length;
+            if (len > 499) {
+                $(this).val($(this).val().substring(0, 500));
+            }
+            var num = 500 - len;
+            $(".text_num").text(num + "/500");
+        });
+        //发送
+        $(".send_btn").click(function () {
+            var content = $(".suggest_text").val();
+            if ($.trim(content) == "") {
+                ocean.tip("请输入意见或建议");
+                $(".suggest_text").val("");
+                $(".text_num").text("0/500");
+                return;
+            }
+            var loading = weui.loading('loading');
+            ocean.post("api/opinion", {
+                userId: ocean.getLoginUserId(),
+                content: content
+            }, function (res) {
+                if (res.code == 0) {
+                    loading.hide();
+                    console.log(res);
+                    $(".suggest_text").val("");
+                    $(".text_num").text("0/500");
+                    ocean.tip("反馈成功");
+                }
+            }, function (res) {
+                ocean.tip(res.message);
+            });
+        })
+    }
+
+</script>
+</html>

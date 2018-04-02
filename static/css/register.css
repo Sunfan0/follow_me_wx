@@ -1,0 +1,99 @@
+.register1 {
+    padding: 55px 15px;
+}
+
+.register1 .input_item {
+    border-bottom: 1px solid #DEDEDE;
+    padding: 9px 0;
+    height: 30px;
+    line-height: 30px;
+}
+
+.register1 .input_item input {
+    font-size: 1em;
+}
+
+.register1 .input_item #school_value1 {
+    width: 70%;
+    border-right: 1px solid #CCCCCC;
+    margin-right: 20%;
+}
+
+.register2 {
+    padding: 0 15px;
+}
+
+.register2 .footer {
+    text-align: center;
+    color: #FFA135;
+    font-size: 1em;
+    line-height: 60px;
+}
+
+.register2 .input_item {
+    border: 1px solid rgba(153, 153, 153, 0.65);
+    border-radius: 2px;
+    padding: 9px 15px;
+    height: 30px;
+    line-height: 30px;
+    margin-top: 10px;
+}
+
+.register2 .input_item input {
+    font-size: 1em;
+}
+
+.register2 .input_item #school_value2 {
+    width: 85%;
+    border-right: 1px solid #CCCCCC;
+    margin-right: 5%;
+}
+
+.register2 .input_item #specialty_value2 {
+    width: 90.5%;
+}
+
+.register2 .input_item .num86 {
+    width: 30%;
+    padding-right: 15px;
+    border-right: 1px solid #CCCCCC;
+}
+
+.register2 .input_item #phone_value2 {
+    width: 60%;
+    padding-left: 15px;
+    padding-right: 20px;
+}
+
+.register2 .input_item #code_value2 {
+    width: 50%;
+    padding-right: 20px;
+}
+
+.register2 .input_item .get_code {
+    width: 90px;
+    color: #009AF2;
+    border: 1px solid #009AF2;
+    border-radius: 2px;
+    text-align: center;
+    display: inline-block;
+    float: right;
+    font-size: 0.9em;
+}
+
+.go_register {
+    width: 100%;
+    height: 44px;
+    line-height: 44px;
+    background-color: #009AF2;
+    color: #fff;
+    text-align: center;
+    border-radius: 4px;
+    margin-top: 50px;
+}
+
+.go_login {
+    text-align: center;
+    color: #009AF2;
+    margin-top: 40px;
+}

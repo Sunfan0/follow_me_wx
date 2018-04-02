@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+    <title class="title">校园办卡</title>
+    <link rel="stylesheet" type="text/css" href="../../static/css/store/card.css"/>
+    <link rel="stylesheet" type="text/css" href="../../static/css/common.css"/>
+    <link rel="stylesheet" type="text/css" href="../../static/css/weui.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../static/css/swiper-3.4.2.min.css"/>
+</head>
+<body>
+<div class="common_top">
+    <span class="back_btn" onclick="history.back()"><div></div></span>
+    <p class="title">校园办卡</p>
+</div>
+<div class="common_content">
+    <div class="card_content">
+        <div class="card_item on" data-item="1">
+            <p class="name">4G飞享38元</p>
+            <p class="info">语音50分钟<span class="right">流量300M</span></p>
+        </div>
+        <div class="card_item" data-item="2">
+            <p class="name">4G飞享38元</p>
+            <p class="info">语音50分钟<span class="right">流量300M</span></p>
+        </div>
+        <div class="card_item" data-item="3">
+            <p class="name">4G飞享38元</p>
+            <p class="info">语音50分钟<span class="right">流量300M</span></p>
+        </div>
+    </div>
+    <p class="manage_btn">立即办理</p>
+</div>
+</body>
+<script type="text/javascript" src="../../static/js/jquery-3.1.1.min.js"></script>
+<script type="text/javascript" src="../../static/js/common.js"></script>
+<script type="text/javascript" src="../../static/js/weui.min.js"></script>
+<script type="text/javascript" src="../../static/js/core/core_0305.js"></script>
+<script type="text/javascript" src="../../static/js/swiper-3.4.2.jquery.min.js"></script>
+<script>
+    window.onload = onLoad();
+    var carType = 1
+
+    function onLoad() {
+        //选择办卡种类
+        $(".card_item").click(function () {
+            $(this).siblings().removeClass('on');
+            $(this).addClass('on');
+            carType = $(this).data("item");
+        })
+    }
+
+</script>
+</html>

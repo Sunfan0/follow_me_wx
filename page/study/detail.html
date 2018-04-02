@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+    <title class="title">文章详情</title>
+    <link rel="stylesheet" type="text/css" href="../../static/css/study/detail_0304.css"/>
+    <link rel="stylesheet" type="text/css" href="../../static/css/common.css"/>
+    <link rel="stylesheet" type="text/css" href="../../static/css/weui.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../static/css/swiper-3.4.2.min.css"/>
+</head>
+<body>
+<div class="common_top">
+    <span class="back_btn" onclick="history.back()"><div></div></span>
+    <p class="title">文章详情</p>
+</div>
+<div class="common_content">
+    <p class="article_title"></p>
+    <p class="article_sub">
+        <span class="article_time"></span>
+        <span class="article_num"></span>
+    </p>
+    <div class="article_content"></div>
+    <p class="join_btn" onclick="window.location.href = 'join.html?articleId='+detailId+'&title='+detailTitle"
+       style="display:none;">我要报名</p>
+    <div class="comment_body">
+        <span class="write_title" onclick="writeComment(1)" style="display: none;">评论 ✎</span>
+        <div class="write_bg" style="display: none" onclick="writeComment(0)"></div>
+        <div class="write_content" style="display: none">
+            <textarea id="write_text" maxlength="200" onchange="this.value=this.value.substring(0, 200)" onkeydown="this.value=this.value.substring(0, 200)" onkeyup="this.value=this.value.substring(0, 200)" ></textarea>
+            <span id="comment_submit" class="" onclick="submitComment()">发布</span>
+        </div>
+        <div class="comment_content"></div>
+    </div>
+</div>
+</body>
+<script type="text/javascript" src="../../static/js/jquery-3.1.1.min.js"></script>
+<script type="text/javascript" src="../../static/js/common.js"></script>
+<script type="text/javascript" src="../../static/js/weui.min.js"></script>
+<script type="text/javascript" src="../../static/js/core/underscore.js"></script>
+<script type="text/javascript" src="../../static/js/core/util.js"></script>
+<script type="text/javascript" src="../../static/js/core/core_0305.js"></script>
+<script type="text/javascript" src="../../static/js/swiper-3.4.2.jquery.min.js"></script>
+<script>
+    var detailTitle = "";
+    var detailId = "";
+    var from = "";
+    var userId = "";
+
+    var loadDetailData = function () {
+        $('.write_title').show();
+
+        detailId = ocean.getRequestParameter("detailId");
+        from = ocean.getRequestParameter("from");
+        userId = JSON.parse(localStorage.getItem("ocean-follow-user") || "{}").id;
+        if (from == "post") {
+            ocean.get("api/post/article_details", {
+                userId: userId,
+                id: detailId
+            }, function (res) {
+                if (res.code == 0) {
+                    console.log(res.data);
+                    detailTitle = res.data.title;
+                    $(".title").text(detailTitle);
+                    $(".article_title").text(res.data.title);
+                    $(".article_time").text(res.data.releaseTime.substr(0, 10));
+                    $(".article_num").text("阅读 " + (res.data.realPageView + res.data.pageView));
+                    $(".article_content").html(res.data.content);
+                    if (res.data.articleOpen == 1) {
+                        $(".join_btn").css("display", "block");
+                    }
+                    loadItemData();
+                }
+            });
+        } else if (from == "article") {
+            ocean.get("api/article_details", {
+                userId: userId,
+                id: detailId
+            }, function (res) {
+                if (res.code == 0) {
+                    console.log(res.data);
+                    detailTitle = res.data.title;
+                    $(".title").text(detailTitle);
+                    $(".article_title").text(res.data.title);
+                    $(".article_time").text(res.data.releaseTime.substr(0, 10));
+                    $(".article_num").text("阅读 " + (res.data.realPageView + res.data.pageView));
+                    $(".article_content").html(res.data.content);
+                    if (res.data.articleOpen == 1) {
+                        $(".join_btn").css("display", "block");
+                    }
+                    loadItemData();
+                }
+            });
+        }
+    }
+
+    judgeLogin(loadDetailData);
+
+    $('#write_text').bind('input propertychange', function () {
+        this.style.height = 'auto';
+        if ($(this).val().length < 24) {
+            this.style.height = '20px';
+            console.log("111111")
+        } else {
+            this.style.height = this.scrollHeight - 10 + 'px';
+        }
+        if ($(this).val() != "") {
+            $('#comment_submit').addClass('on');
+        } else {
+            $('#comment_submit').removeClass('on');
+        }
+    });
+
+    function writeComment(state) {
+        if (state == 1) {
+            $('.write_bg').show();
+            $('.write_content').show();
+            $('#write_text').focus();
+        } else {
+            $('.write_bg').hide();
+            $('.write_content').hide();
+            $("#write_text").val('');
+            $("#write_text").css('height', '20px');
+        }
+    }
+
+    function submitComment() {
+        var content = $("#write_text").val();
+        if ($.trim(content) == "") {
+            return;
+        }
+        var loading = weui.loading('loading');
+        ocean.post("api/article_comment", {
+            userId: userId,
+            articleId: detailId,
+            content: content
+        }, function (res) {
+            if (res.code == 0) {
+                loading.hide();
+                console.log(res);
+                location.reload();
+            }
+        }, function (res) {
+            ocean.tip(res.message);
+        });
+    }
+
+    function loadItemData() {
+        ocean.post("api/comment_list", {
+            articleId: detailId
+        }, function (res) {
+            if (res.code == 0) {
+                console.log(res.data);
+                var list = res.data;
+                var template = _.template($('#item_list').html());
+                $('.comment_content').append(template({list: list}));
+            }
+        });
+    }
+</script>
+<script type="text/template" id="item_list">
+    <@_.each(list, function (item) {@>
+    <div class="item_box">
+        <div class="header_img" style="background-image: url('<@=item.head@>')"></div>
+        <div class="text_info">
+            <p class="name"><@=item.name@></p>
+            <p class="info"><@=item.content@></p>
+            <p class="time"><@=item.commentTime@></p>
+        </div>
+    </div>
+    <@ }); @>
+</script>
+</html>

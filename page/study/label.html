@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+    <title class="title">慧学习</title>
+    <link rel="stylesheet" type="text/css" href="../../static/css/study/label.css"/>
+    <link rel="stylesheet" type="text/css" href="../../static/css/common.css"/>
+    <link rel="stylesheet" type="text/css" href="../../static/css/weui.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../static/css/swiper-3.4.2.min.css"/>
+</head>
+<body>
+<div class="common_top">
+    <span class="back_btn" onclick="history.back()"><div></div></span>
+    <p class="title"></p>
+</div>
+<div class="common_content">
+    <div class="list_content">
+    </div>
+</div>
+</body>
+<script type="text/javascript" src="../../static/js/jquery-3.1.1.min.js"></script>
+<script type="text/javascript" src="../../static/js/common.js"></script>
+<script type="text/javascript" src="../../static/js/weui.min.js"></script>
+<script type="text/javascript" src="../../static/js/core/underscore.js"></script>
+<script type="text/javascript" src="../../static/js/core/util.js"></script>
+<script type="text/javascript" src="../../static/js/core/core_0305.js"></script>
+<script type="text/javascript" src="../../static/js/swiper-3.4.2.jquery.min.js"></script>
+<script type="text/javascript" src="../../static/js/dropload.min.js"></script>
+<script>
+    var titleText = ocean.getRequestParameter("titleText");
+    var isRecord = ocean.getRequestParameter("isRecord");
+    var labelId = ocean.getRequestParameter("labelId");
+    var type = ocean.getRequestParameter("type");
+    var loading = weui.loading('loading');
+    var params = {
+        page: 0,
+        limit: 10,
+        id: labelId,
+        userId: ''
+    };
+    var loader;
+
+    var loadDate = function () {
+        var userId = JSON.parse(localStorage.getItem("ocean-follow-user") || "{}").id;
+        params.userId = userId;
+        loader = $('.common_content').dropload({
+            scrollArea: window,
+            domDown: {
+                domClass: 'weui-loadmore ',
+                domRefresh: '<div class="dropload-refresh">↑上拉加载更多</div>',
+                domLoad: '<i class="weui-loading"></i><span class="weui-loadmore__tips">正在加载</span>',
+                domNoData: '<span class="bottomBox_common weui-loadmore__bottom"><span>大学生，我有我的底线</span></span>'
+            },
+            loadDownFn: function () {
+                params.page += 1;
+                if (isRecord) {
+                    loadRecordData();
+                } else {
+                    loadItemData();
+                }
+            }
+        });
+        loading.hide();
+    };
+
+    window.onload = onLoad();
+
+    function onLoad() {
+        judgeLogin(loadDate);
+    }
+
+    function loadRecordData() {
+        ocean.post("api/footprint", params, function (res) {
+            if (res.code == 0) {
+                console.log(res.data);
+                $(".title").text("我的足迹")
+                appendHtml(res, "暂无记录");
+            }
+        });
+    }
+
+    function loadItemData() {
+        $(".title").text(titleText)
+        if (type == "label") {
+            ocean.post("api/article_list", params, function (res) {
+                if (res.code == 0) {
+                    console.log(res.data);
+                    appendHtml(res, "暂无文章");
+                }
+            });
+        } else if (type == 'post') {
+            ocean.post("api/post_article_list", params, function (res) {
+                if (res.code == 0) {
+                    console.log(res.data);
+                    appendHtml(res, "暂无文章");
+                }
+            });
+        } else if (type == 'parentLabel') {
+            ocean.post("api/parent_article_list", params, function (res) {
+                if (res.code == 0) {
+                    console.log(res.data);
+                    appendHtml(res, "暂无文章");
+                }
+            });
+        }
+
+    }
+
+    function appendHtml(res, text) {
+        var list = res.data.list;
+        var template = _.template($('#item_list').html());
+        if (res.data.isFirstPage || res.data.pageNum == 0) {
+            console.log(text)
+            $('.list_content').html("");
+            setTimeout(function () {
+                $(".bottomBox_common span").text(text);
+            }, 50)
+        }
+        $('.list_content').append(template({list: list}));
+
+        if (res.data.isLastPage) {
+            loader.lock();
+            loader.noData(true);
+        } else {
+            loader.unlock();
+            loader.noData(false);
+        }
+        loader.resetload();
+    }
+
+    function clickItem(id) {
+        window.location.href = 'detail.html?detailId=' + id + "&from="+type;
+    }
+
+</script>
+<script type="text/template" id="item_list">
+    <@_.each(list, function (item) {@>
+    <div class="info_box" onclick="clickItem('<@=item.id@>')">
+        <div class="left">
+            <@if(item.title.length>20){@>
+            <p class="name"><@=item.title.substr(0,20)@>...</p>
+            <@}else{@>
+            <p class="name"><@=item.title@></p>
+            <@}@>
+            <p class="num"><@=item.realPageView+item.pageView@>人阅读</p>
+        </div>
+        <div class="right" style="background-image: url('<@=item.picture@>')"></div>
+    </div>
+    <@ }); @>
+</script>
+</html>

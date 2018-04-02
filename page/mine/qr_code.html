@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+    <title class="title">我的任务</title>
+    <link rel="stylesheet" type="text/css" href="../../static/css/mine/mine_0228.css"/>
+    <link rel="stylesheet" type="text/css" href="../../static/css/common.css"/>
+    <link rel="stylesheet" type="text/css" href="../../static/css/weui.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../static/css/swiper-3.4.2.min.css"/>
+</head>
+<body>
+<div class="common_top">
+    <span class="back_btn" onclick="history.back()"><div></div></span>
+    <p class="title">我的任务</p>
+</div>
+<div class="common_content">
+    <div class="taskList"></div>
+    <img id="qr_code" style="width: 40%; margin: 20px 30%;"/>
+</div>
+</body>
+<script type="text/javascript" src="../../static/js/jquery-3.1.1.min.js"></script>
+<script type="text/javascript" src="../../static/js/common.js"></script>
+<script type="text/javascript" src="../../static/js/weui.min.js"></script>
+<script type="text/javascript" src="../../static/js/core/underscore.js"></script>
+<script type="text/javascript" src="../../static/js/core/util.js"></script>
+<script type="text/javascript" src="../../static/js/core/core_0305.js"></script>
+<script type="text/javascript" src="../../static/js/swiper-3.4.2.jquery.min.js"></script>
+<script>
+    var userId = ocean.getRequestParameter("userId");
+    var bizIdentity = ocean.getRequestParameter("bizIdentity");
+    window.onload = onLoad();
+
+    function onLoad() {
+        /*任务*/
+         ocean.post("api/member_task", {}, function (res) {
+             if (res.code == 0) {
+                 console.log(res);
+                 var list = res.data;
+                 var template = _.template($('#item_list').html());
+                 $('.taskList').append(template({list: list}));
+             }
+         }, function (res) {
+             ocean.tip(res.message);
+         });
+
+        /*二维码*/
+        ocean.get("api/wx/qr_ticket", {
+            code: userId,
+            bizIdentity: bizIdentity
+        }, function (res) {
+            console.log(res);
+            if (res.code == 0) {
+                $("#qr_code").attr("src", "https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=" + encodeURI(res.data));
+            }
+        }, function (res) {
+            ocean.tip(res.message);
+        });
+    }
+</script>
+<script type="text/template" id="item_list">
+    <@_.each(list, function (item) {@>
+    <div class="task_box">
+        <div class="task_item">
+            <div class="name"><@=item.name@></div>
+        </div>
+    </div>
+    <@ }); @>
+</script>
+</html>

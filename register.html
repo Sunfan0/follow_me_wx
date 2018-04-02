@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+    <title class="title">注册</title>
+    <!--<link rel="stylesheet" type="text/css" href="static/css/register.css"/>-->
+    <link rel="stylesheet" type="text/css" href="static/css/common.css"/>
+    <link rel="stylesheet" type="text/css" href="static/css/weui.min.css"/>
+</head>
+<body onbeforeunload="saveRecord();">
+<div class="common_top">
+    <span class="back_btn" onclick="history.back()"><div></div></span>
+    <p class="title">注册</p>
+</div>
+<div class="common_content register1" style="display: none;">
+    <div class="input_item">
+        <input id="school_value1" placeholder="请选择或输入大学/院校"/>
+        <img class="common_select select_school" src="static/img/common/select_btn.png">
+    </div>
+    <div class="input_item">
+        <input id="code_value1_1" placeholder="请输入验证码"/>
+    </div>
+    <div class="input_item">
+        <input id="code_value1_2" placeholder="请输入验证码"/>
+    </div>
+    <p class="go_register">注册</p>
+    <p class="go_login">登录</p>
+</div>
+<div class="common_content register2">
+    <p class="footer">注册成功即可领取XG流量仅限移动用户</p>
+    <div class="input_item select_school">
+        <input id="school_value2" placeholder="请选择或输入大学/院校" disabled/>
+        <img class="common_select" src="static/img/common/select_btn.png">
+    </div>
+    <div class="input_item select_specialty">
+        <input id="specialty_value2" placeholder="请输入专业"/>
+        <!--<img class="common_select" src="static/img/common/select_btn.png">-->
+    </div>
+    <div class="input_item">
+        <input id="name_value2" placeholder="请输入姓名"/>
+    </div>
+    <div class="input_item">
+        <span class="num86">+86</span>
+        <input id="phone_value2" class="common_input" maxlength="11" onkeyup="value=value.replace(/[^\d]/g,'')"
+               placeholder="请输入手机号"/>
+        <img class="common_clearBtn" src="static/img/common/clear_btn.png">
+    </div>
+    <div class="input_item">
+        <input id="code_value2" class="common_input" placeholder="请输入验证码"/>
+        <img class="common_clearBtn" src="static/img/common/clear_btn.png">
+        <span class="get_code" onclick="getCodeEvent(this,'phone_value2')">&nbsp;</span>
+    </div>
+    <p class="go_register">注册</p>
+    <p class="go_login">登录</p>
+</div>
+</body>
+<script type="text/javascript" src="static/js/jquery-3.1.1.min.js"></script>
+<script type="text/javascript" src="static/js/common.js"></script>
+<script type="text/javascript" src="static/js/weui.min.js"></script>
+<script type="text/javascript" src="static/js/core/core_0305.js"></script>
+<script>
+    var record_school = sessionStorage.getItem("record_school");
+    var record_school_id = sessionStorage.getItem("record_school_id");
+    var record_specialty = sessionStorage.getItem("record_specialty");
+    var record_name = sessionStorage.getItem("record_name");
+    var record_phone = sessionStorage.getItem("record_phone");
+    var record_code = sessionStorage.getItem("record_code");
+    var p = sessionStorage.getItem("ocean_follow_me_parent") || ocean.getRequestParameter("p") || "";
+
+    sessionStorage.setItem("ocean_follow_me_parent", p);
+
+    window.onload = onLoad();
+
+    function onLoad() {
+        dynamicLoading.css("static/css/register.css");
+
+        //事件绑定
+        bindEvent();
+
+        if (record_school != null) {
+            $("#school_value2").val(record_school);
+        }
+        if (record_specialty != null) {
+            $("#specialty_value2").val(record_specialty);
+        }
+        if (record_name != null) {
+            $("#name_value2").val(record_name);
+        }
+        if (record_phone != null) {
+            $("#phone_value2").val(record_phone);
+        }
+        if (record_code != null) {
+            $("#code_value2").val(record_code);
+        }
+
+        $('.common_input').each(function () {
+            if ($(this).val() != "") {
+                $(this).next().css("display", "inline-block");
+            } else {
+                $(this).next().css("display", "none");
+            }
+        })
+
+        //判断是否在倒计时
+        countDown($('.get_code'), true);
+    }
+
+    function bindEvent() {
+        //选择或输入大学/院校
+        $(".select_school").click(function () {
+            saveRecord();
+            window.location.href = 'common_select.html?dataType=school';
+        })
+        //选择专业
+        /*$(".select_specialty").click(function () {
+            saveRecord();
+            window.location.href = 'common_select.html?dataType=specialty';
+        })*/
+        //登录
+        $(".go_login").click(function () {
+            window.location.href = 'login.html';
+        })
+        //注册
+        $(".go_register").click(function () {
+            var pattern = /^1[34578]\d{9}$/;
+            if ($("#school_value2").val() == "") {
+                ocean.tip("请选择或输入大学/院校");
+                return;
+            }
+            if ($("#specialty_value2").val() == "") {
+                ocean.tip("请选择专业");
+                return;
+            }
+            if ($("#name_value2").val() == "") {
+                ocean.tip("请输入姓名");
+                return;
+            }
+            if ($("#phone_value2").val() == "") {
+                ocean.tip("请输入手机号");
+                return;
+            }
+            if (!pattern.test($("#phone_value2").val())) {
+                ocean.tip("手机号码有误，请重新输入");
+                return;
+            }
+            if ($("#code_value2").val() == "") {
+                ocean.tip("请输入验证码");
+                return;
+            }
+            var wxUser = JSON.parse(localStorage.getItem(wx_user_cookie_key));
+
+            var params = {
+                name: $("#name_value2").val(),
+                school: record_school,
+                speciality: $("#specialty_value2").val(),
+                phone: $("#phone_value2").val(),
+                nickname: debug ? 'debug' : wxUser.nickname.replace(/\uD83C[\uDF00-\uDFFF]|\uD83D[\uDC00-\uDE4F]/g, ""),
+                openId: debug ? 'debug' : wxUser.openid,
+                head: debug ? '' : wxUser.headimgurl,
+                code: $("#code_value2").val(),
+                parent: sessionStorage.getItem("ocean_follow_me_parent")
+            };
+
+            var loading = weui.loading('loading');
+            ocean.post("api/register", params, function (res) {
+                loading.hide();
+                if (res.code == 0) {
+                    localStorage.setItem("ocean-follow-user", JSON.stringify(res.data));
+                    localStorage.setItem("ocean-follow-biz-code", res.data.bizIdentity || res.data.parentBizIdentity || "A1035554");
+                    //是否存在上一个链接且不是登录页面，存在且不是登录或注册页面--则返回上个链接，否则进入index
+                    if (!(window.location.href.indexOf('register.html') > -1 || window.location.href.indexOf('login.html') > -1)) {
+                        var redirectUri = localStorage.getItem("login-redirect-uri");
+                    }
+                    if (redirectUri) {
+                        location.href = redirectUri;
+                        localStorage.setItem("login-redirect-uri", null);
+                    } else {
+                        location.href = "index.html"
+                    }
+                } else {
+                    ocean.tip(res.data.message);
+                }
+            }, function (res) {
+                ocean.tip(res.message);
+            });
+        })
+    }
+
+    /*保存当前填写记录*/
+    function saveRecord() {
+        sessionStorage.setItem("record_school", $("#school_value2").val());
+        sessionStorage.setItem("record_specialty", $("#specialty_value2").val());
+        sessionStorage.setItem("record_name", $("#name_value2").val());
+        sessionStorage.setItem("record_phone", $("#phone_value2").val());
+        sessionStorage.setItem("record_code", $("#code_value2").val());
+        sessionStorage.setItem("record_countdown", record_countdown);
+    }
+</script>
+</html>

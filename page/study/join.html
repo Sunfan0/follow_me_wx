@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+    <title class="title">慧学习</title>
+    <link rel="stylesheet" type="text/css" href="../../static/css/study/join.css"/>
+    <link rel="stylesheet" type="text/css" href="../../static/css/common.css"/>
+    <link rel="stylesheet" type="text/css" href="../../static/css/weui.min.css"/>
+</head>
+<body onbeforeunload="saveRecord();">
+<div class="common_top">
+    <span class="back_btn" onclick="history.back()"><div></div></span>
+    <p class="title">我要报名</p>
+</div>
+<div class="common_content">
+    <div class="input_item">
+        <input id="user_school" class="common_input" placeholder="请输入学校"/>
+        <img class="common_clearBtn" src="../../static/img/common/clear_btn.png">
+    </div>
+    <div class="input_item">
+        <input id="user_name" class="common_input" placeholder="请输入姓名"/>
+        <img class="common_clearBtn" src="../../static/img/common/clear_btn.png">
+    </div>
+    <div class="input_item">
+        <span class="sex_text">性别</span>
+        <img id="sex_choice_1" class="sex_choice" src="../../static/img/common/choice_0.png">男
+        <img id="sex_choice_0" class="sex_choice" src="../../static/img/common/choice_0.png">女
+    </div>
+    <div class="input_item">
+        <input id="user_phone" class="common_input" maxlength="11" onkeyup="value=value.replace(/[^\d]/g,'')"
+               placeholder="请输入手机号"/>
+        <img class="common_clearBtn" src="../../static/img/common/clear_btn.png">
+    </div>
+    <div class="input_item select_cardType">
+        <input id="card_type" placeholder="请选择证件类型" disabled/>
+        <img class="common_select" src="../../static/img/common/select_btn.png">
+    </div>
+    <div class="input_item">
+        <input id="card_id" class="common_input" maxlength="18" placeholder="请输入证件号码"/>
+        <img class="common_clearBtn" src="../../static/img/common/clear_btn.png">
+    </div>
+    <div class="input_item">
+        <input id="remark_text" class="common_input" placeholder="备注"/>
+        <img class="common_clearBtn" src="../../static/img/common/clear_btn.png">
+    </div>
+    <p class="submit_btn">立即提交</p>
+</div>
+</body>
+<script type="text/javascript" src="../../static/js/jquery-3.1.1.min.js"></script>
+<script type="text/javascript" src="../../static/js/common.js"></script>
+<script type="text/javascript" src="../../static/js/weui.min.js"></script>
+<script type="text/javascript" src="../../static/js/core/core_0305.js"></script>
+<script>
+    var user_school = sessionStorage.getItem("user_school");
+    var user_name = sessionStorage.getItem("user_name");
+    var user_sex = sessionStorage.getItem("user_sex");
+    var user_phone = sessionStorage.getItem("user_phone");
+    var card_type = sessionStorage.getItem("card_type");
+    var card_type_id = sessionStorage.getItem("card_type_id");
+    var card_id = sessionStorage.getItem("card_id");
+    var remark_text = sessionStorage.getItem("remark_text");
+    var articleId = ocean.getRequestParameter("articleId");
+    var articleTitle = ocean.getRequestParameter("title");
+    window.onload = onLoad();
+
+    function onLoad() {
+        //事件绑定
+        bindEvent();
+
+        if (user_school != null) {
+            $("#user_school").val(user_school);
+        }
+        if (user_name != null) {
+            $("#user_name").val(user_name);
+        }
+        if (user_sex != null) {
+            $(".sex_choice").attr("src", "../../static/img/common/choice_0.png");
+            $("#sex_choice_" + user_sex).attr("src", "../../static/img/common/choice_1.png");
+        } else {
+            user_sex = 1
+            $("#sex_choice_" + user_sex).attr("src", "../../static/img/common/choice_1.png");
+        }
+
+        if (user_phone != null) {
+            $("#user_phone").val(user_phone);
+        }
+        if (card_type != null) {
+            $("#card_type").val(card_type);
+        }
+        if (card_id != null) {
+            $("#card_id").val(card_id);
+        }
+        if (remark_text != null) {
+            $("#remark_text").val(remark_text);
+        }
+
+        $('.common_input').each(function () {
+            if ($(this).val() != "") {
+                $(this).next().css("display", "inline-block");
+            } else {
+                $(this).next().css("display", "none");
+            }
+        })
+    }
+
+    function bindEvent() {
+        //选择性别
+        $(".sex_choice").click(function () {
+            $(".sex_choice").attr("src", "../../static/img/common/choice_0.png");
+            $(this).attr("src", "../../static/img/common/choice_1.png");
+            user_sex = $(this).attr('id').substr(11, 12);
+        })
+        //选择证件类型
+        $(".select_cardType").click(function () {
+            saveRecord();
+            window.location.href = '../../common_select.html?dataType=card_type';
+        })
+        //登录
+        $(".submit_btn").click(function () {
+            var pattern = /^1[34578]\d{9}$/;
+            var cardtype = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+            if ($("#user_school").val() == "") {
+                ocean.tip("请输入学校");
+                return;
+            }
+            if ($("#user_name").val() == "") {
+                ocean.tip("请选择姓名");
+                return;
+            }
+            if ($("#user_phone").val() == "") {
+                ocean.tip("请输入手机号");
+                return;
+            }
+            if (!pattern.test($("#user_phone").val())) {
+                ocean.tip("手机号码有误，请重新输入");
+                return;
+            }
+            if ($("#card_type").val() == "") {
+                ocean.tip("选择证件类型");
+                return;
+            }
+            if ($("#card_id").val() == "") {
+                ocean.tip("请输入证件号码");
+                return;
+            }
+            if (card_type_id == 0 && !cardtype.test($("#card_id").val())) {
+                ocean.tip("身份证格式有误，请重新输入");
+                return;
+            }
+
+            var loading = weui.loading('loading');
+            ocean.post("api/sign_up_add", {
+                articleId: articleId,
+                title: articleTitle,
+                school: $("#user_school").val(),
+                name: $("#user_name").val(),
+                sex: user_sex,
+                phone: $("#user_phone").val(),
+                certificateType: card_type_id,
+                certificateNum: $("#card_id").val(),
+                remarks: $("#remark_text").val()
+            }, function (res) {
+                loading.hide();
+                if (res.code == 0) {
+                    console.log(res);
+                    ocean.tip("报名成功",function () {
+                        history.back();
+                    });
+                }
+            });
+        })
+    }
+
+    /*保存当前填写记录*/
+    function saveRecord() {
+        sessionStorage.setItem("user_school", $("#user_school").val());
+        sessionStorage.setItem("user_name", $("#user_name").val());
+        sessionStorage.setItem("user_sex", user_sex);
+        sessionStorage.setItem("user_phone", $("#user_phone").val());
+        sessionStorage.setItem("card_type", $("#card_type").val());
+        sessionStorage.setItem("card_id", $("#card_id").val());
+        sessionStorage.setItem("remark_text", $("#remark_text").val());
+    }
+</script>
+</html>

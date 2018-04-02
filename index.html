@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+    <title class="title">惠生活</title>
+    <!--<link rel="stylesheet" type="text/css" href="static/css/index.css"/>-->
+    <!--<link rel="stylesheet" type="text/css" href="static/css/common.css"/>-->
+    <link rel="stylesheet" type="text/css" href="static/css/weui.min.css"/>
+    <link rel="stylesheet" type="text/css" href="static/css/swiper-3.4.2.min.css"/>
+</head>
+<body>
+<div class="content" style="display: none">
+    <div class="banner">
+        <section class="pc-banner">
+            <div class="swiper-container">
+                <div class="swiper-wrapper" id="banner_content">
+                    <div class="swiper-slide swiper-slide-center none-effect swiper-slide-duplicate swiper-slide-duplicate-next">
+                        <img class="lazy" src="static/img/index/coming.png">
+                    </div>
+                </div>
+                <div class="swiper-pagination"></div>
+            </div>
+        </section>
+    </div>
+    <div class="title_img">
+        <div class="title_item" data-id="4606854210a811e8a6d0b888e3382386">
+            <img src="static/img/index/life_2.png">
+            <p>分时包</p>
+        </div>
+        <div class="title_item" data-id="5b53248b10a311e8a6d0b888e3382386">
+            <img src="static/img/index/life_1.png">
+            <p>包月流量</p>
+        </div>
+        <div class="title_item" data-id="d1920e74178211e883e900163e0077ec">
+            <img src="static/img/index/life_3.png">
+            <p>校园飞享</p>
+        </div>
+        <div class="title_item" data-id="e1b8fd0d10a111e8a6d0b888e3382386">
+            <img src="static/img/index/life_4.png">
+            <p>校园专属</p>
+        </div>
+    </div>
+    <div class="body_item">
+        <div class="body_task"></div>
+        <div class="hr_common"></div>
+        <div class="item_box">
+            <p class="titleSign_common"><span>校园必备套餐包</span></p>
+            <div class="item_img">
+                <div class="info">
+                    <div class="img" style="background-image: url('static/img/index/coming.png')"></div>
+                    <p class="name">考研必备包</p>
+                </div>
+                <div class="info">
+                    <div class="img" style="background-image: url('static/img/index/coming.png')"></div>
+                    <p class="name">实习工作必备包</p>
+                </div>
+            </div>
+        </div>
+        <div class="hr_common"></div>
+        <div class="item_box">
+            <p class="titleSign_common"><span>校园跑腿</span></p>
+            <div class="item_img">
+                <div class="comingImg_common"></div>
+            </div>
+        </div>
+    </div>
+    <div class="bottomBox_common"><span>大学生，我有我的底线</span></div>
+</div>
+</body>
+<script type="text/javascript" src="static/js/jquery-3.1.1.min.js"></script>
+<!--<script type="text/javascript" src="static/js/common.js"></script>-->
+<script type="text/javascript" src="static/js/weui.min.js"></script>
+<script type="text/javascript" src="static/js/core/underscore.js"></script>
+<script type="text/javascript" src="static/js/core/util.js"></script>
+<script type="text/javascript" src="static/js/core/core_0305.js"></script>
+<script type="text/javascript" src="static/js/swiper-3.4.2.jquery.min.js"></script>
+<script>
+    $(function() {
+        dynamicLoading.css("static/css/index.css");
+        dynamicLoading.css("static/css/common.css");
+        dynamicLoading.js("static/js/common.js");
+        setTimeout(function () {
+            $(".content").show();
+        }, 50)
+    })
+
+    window.onload = onLoad();
+
+    function onLoad() {
+        $(".title_item").click(function () {
+            var id = $(this).data("id");
+            window.location.href="index_list.html?id="+id;
+        });
+        fetchPageData();
+        fatchTask();
+    }
+
+    function fetchPageData() {
+        if (sessionStorage.getItem("index-page-data")) {
+            var data = JSON.parse(sessionStorage.getItem("index-page-data"));
+            console.log(data);
+            initPage(data);
+        } else {
+            ocean.get("api/banner", {}, function (res) {
+                if (res.code == 0) {
+                    console.log(res.data);
+                    sessionStorage.setItem("index-page-data", JSON.stringify(res.data));
+                    initPage(res.data);
+                }
+            }, function (error) {
+                ocean.tip(error);
+            });
+        }
+    }
+
+    function initPage(data) {
+        var bannerData = data;
+        $("#banner_content").html("");
+        $.each(bannerData, function (index, item) {
+            addBannerItem(item);
+        });
+        new ocean_banner('.swiper-container');
+    }
+
+    function addBannerItem(banner) {
+        var clazz = "type_" + banner.type.toLowerCase() + " swiper-slide swiper-slide-center none-effect";
+        var data = "";
+        if (banner.type == "URL") {
+            data = banner.url;
+        } else if (banner.type == "MESSAGE") {
+            data = banner.messageId;
+        } else if (banner.type == "BOOK") {
+            data = banner.bookId;
+        }
+        var html = "<div class=\"" + clazz + "\" data-id=\"" + data + "\">\n" +
+            "    <img src=\"" + banner.picture + "\">\n" +
+            "</div>";
+        $("#banner_content").append(html);
+    }
+
+    function fatchTask() {
+        ocean.get("api/task", {}, function (res) {
+            if (res.code == 0) {
+                console.log(res);
+                var list = res.data;
+                var template = _.template($('#item_list').html());
+                $('.body_task').append(template({
+                    list: list,
+                    biz: localStorage.getItem("ocean-follow-biz-code") || "A1035554"
+                }));
+            }
+        });
+    }
+</script>
+<script type="text/template" id="item_list">
+    <@_.each(list, function (item) {@>
+    <@if(item.taskType=="包月流量" || item.taskType=="校园专属"){@>
+    <div class="hr_common"></div>
+    <div class="item_box">
+        <p class="titleSign_common"><span><@=item.taskType@></span></p>
+        <div class="item_img">
+            <@_.each(item.tasks, function (task,index) {@>
+            <@if(index<2){@>
+            <div class="info">
+                <div class="img" style="background-image: url('<@=task.picture@>')"
+                     onclick="window.location.href='<@=task.link@>'"></div>
+                <p class="name"><@=task.name@></p>
+            </div>
+            <@}@>
+            <@ }); @>
+        </div>
+    </div>
+    <@}@>
+    <@ }); @>
+</script>
+</html>

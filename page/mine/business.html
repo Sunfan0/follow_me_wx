@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+    <title class="businessPage_btn">业务酬金</title>
+    <link rel="stylesheet" type="text/css" href="../../static/css/mine/business.css"/>
+    <link rel="stylesheet" type="text/css" href="../../static/css/common.css"/>
+    <link rel="stylesheet" type="text/css" href="../../static/css/weui.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../static/css/swiper-3.4.2.min.css"/>
+</head>
+<body>
+<div class="common_top">
+    <!--<span class="back_btn" onclick="history.back()"><div></div></span>-->
+    <span class="back_btn" onclick="location.href='my.html'"><div></div></span>
+    <p class="title">
+        <span class="businessPage_btn">业务酬金</span>
+        <!--<span class="codePage_btn">代理二维码</span>-->
+    </p>
+</div>
+<div class="common_content">
+    <div class="business_page">
+        <div class="header_content">
+            <p class="money_title">酬金金额</p>
+            <p class="money_sum">0.00</p>
+            <div class="btn_div">
+                <span class="deposit_rule">提现规则</span>
+                <span class="deposit_go">可提现</span>
+                <span class="deposit_history">提现记录</span>
+            </div>
+        </div>
+        <p class="history_title">移动业务酬金明细</p>
+        <div class="history_month">
+            <span class="month_btn on" data-month="1">一月</span>
+            <span class="month_btn" data-month="2">二月</span>
+            <span class="month_btn" data-month="3">三月</span>
+            <span class="month_btn" data-month="4">四月</span>
+            <span class="month_btn" data-month="5">五月</span>
+            <span class="month_btn" data-month="6">六月</span>
+            <span class="month_btn" data-month="7">七月</span>
+            <span class="month_btn" data-month="8">八月</span>
+            <span class="month_btn" data-month="9">九月</span>
+            <span class="month_btn" data-month="10">十月</span>
+            <span class="month_btn" data-month="11">十一月</span>
+            <span class="month_btn" data-month="12">十二月</span>
+        </div>
+        <div class="business_history"></div>
+    </div>
+    <div class="code_page" style="display: none">
+        <img class="content_code" src="../../static/img/index/item_card.png">
+        <p class="flow4_btn flow4_share_btn" style="margin-right: 15px">分享</p>
+        <p class="flow4_btn flow4_down_btn">下载</p>
+    </div>
+</div>
+</body>
+<script type="text/javascript" src="../../static/js/jquery-3.1.1.min.js"></script>
+<script type="text/javascript" src="../../static/js/common.js"></script>
+<script type="text/javascript" src="../../static/js/weui.min.js"></script>
+<script type="text/javascript" src="../../static/js/core/underscore.js"></script>
+<script type="text/javascript" src="../../static/js/core/util.js"></script>
+<script type="text/javascript" src="../../static/js/core/core_0305.js"></script>
+<script type="text/javascript" src="../../static/js/swiper-3.4.2.jquery.min.js"></script>
+<script>
+    var userId = JSON.parse(localStorage.getItem("ocean-follow-user")).id;
+    window.onload = onLoad();
+
+    function onLoad() {
+        //用户金额
+        getMoneySum();
+
+        //页面切换
+        $(".businessPage_btn").click(function () {
+            $(".codePage_btn").removeClass("on");
+            $(this).addClass("on");
+            $(".code_page").css("display","none");
+            $(".business_page").css("display","block");
+            $("body").css("background-color","#f9f9f9");
+        })
+        $(".codePage_btn").click(function () {
+            $(".businessPage_btn").removeClass("on");
+            $(this).addClass("on");
+            $(".code_page").css("display","block");
+            $(".business_page").css("display","none");
+            $("body").css("background-color","#fff");
+        })
+        //月份选择
+        loadItemData(1);
+        $(".month_btn").click(function () {
+            $(this).siblings().removeClass("on");
+            $(this).addClass("on");
+            $(".business_history").html('');
+            loadItemData($(this).data("month"));
+        })
+        //提现规则
+        $(".deposit_rule").click(function () {
+            location.href = "rule.html"
+        })
+        //可提现
+        $(".deposit_go").click(function () {
+            location.href = "deposit.html"
+        })
+        //提现记录
+        $(".deposit_history").click(function () {
+            location.href = "history.html"
+        })
+    }
+    function loadItemData(month) {
+        $('.business_history').html("");
+        var year = new Date().getFullYear();
+        ocean.post("api/task_record", {
+            userId: userId,
+            year: year,
+            month: month
+        }, function (res) {
+            if (res.code == 0) {
+                console.log(res.data);
+                $(".title").text(res.data.articleType)
+                var list = res.data;
+                var template = _.template($('#item_list').html());
+                $('.business_history').append(template({list: list}));
+            }
+        });
+    }
+
+    function getMoneySum() {
+        ocean.post("api/member", {
+            id: userId
+        }, function (res) {
+            if (res.code == 0) {
+                console.log(res.data);
+                $(".money_sum").html(toThousands(res.data.brokerage));
+            }
+        });
+    }
+</script>
+<script type="text/template" id="item_list">
+    <@_.each(list, function (item) {@>
+    <p class="time"><@=item.handleTime.substr(0,4)@>/<@=item.handleTime.substr(5,2)@>/<@=item.handleTime.substr(8,2)@></p>
+    <div class="business_content">
+        <div class="business_detail">
+            <p>
+                <span class="dark"><@=item.taskName@></span>
+                <span class="light right">酬金金额</span>
+            </p>
+            <p>
+                <span class="light"><@=item.handleTime.substr(11,5)@></span>
+                <span class="dark right"><@=toThousands(item.firstBrokerage)@></span>
+            </p>
+        </div>
+    </div>
+    <@ }); @>
+</script>
+</html>
